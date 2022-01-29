@@ -14,11 +14,24 @@ let permalink = 'https://example.com/';
 
 // Data Fetching: List all Markdown posts in the repo.
 export async function getStaticPaths() {
-  return [
-    { params: { year: '2021' } },
-    { params: { year: '2022' } }
-  ];
+
+
+
+
+let allPosts = await Astro.fetchContent('./posts/*.md');
+
+let allYears = allPosts.map( (p) => {
+	const [date,month,year] = p.publishDate.split(" ")
+	return year } );
+
+uniqueYears = [...new Set(allYears)];	
+
+return 	uniqueYears.map( (y) => { params: { year: y }} )
+
 }
+
+
+
 const {year} = Astro.request.params;
 
 
