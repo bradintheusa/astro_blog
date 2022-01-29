@@ -15,11 +15,35 @@ let permalink = 'https://example.com/';
 // Data Fetching: List all Markdown posts in the repo.
 
 let allPosts = await Astro.fetchContent('./posts/*.md');
+
 allPosts = allPosts.sort((a, b) => new Date(b.publishDate).valueOf() - new Date(a.publishDate).valueOf());
 
-just2022 = allPosts.filter( (p) => {
+let just2022 = allPosts.filter( (p) => {
 	const [date,month,year] = p.publishDate.split(" ")
 	return (year == 2022)} );
+
+let years = allPosts.map( (p) => {
+	const [date,month,year] = p.publishDate.split(" ")
+	return year } );
+
+uyears = [...new Set(years)];	
+
+
+uyears = uyears.sort((a, b) => 
+{  if (a < b)
+{
+    return -1;
+  }
+  if (a > b) {
+    return 1;
+  }
+
+  // names must be equal
+  return 0;
+}
+
+);
+
 
 // Full Astro Component Syntax:
 // https://docs.astro.build/core-concepts/astro-components/
@@ -78,6 +102,10 @@ just2022 = allPosts.filter( (p) => {
 					<h1 class="latest">{title}</h1>
 					<p>{description}</p>
 				</section>
+				
+				{uyears.map((y) => <div><a href="index2021/">{y}</a></div>)}
+				
+				
 				<section aria-label="Blog post list">
 					{just2022.map((p) => <BlogPostPreview post={p} />)}
 				</section>
