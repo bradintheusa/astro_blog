@@ -50,8 +50,21 @@ let uniqueMonths = [...new Set(allMonths)];
 
 // we need the year in the url
 uniqueMonths = uniqueMonths.map( (m) => {
-	return {'url':  year+"-"+m, 'desc' : m } 
+	return {'url':  year+"-"+m,year: year, month: m, 'desc' : m } 
 } );
+
+const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+const sorter = (a, b) => {
+   if(a.year !== b.year){
+      return a.year - b.year;
+   }else{
+      return months.indexOf(a.month) - months.indexOf(b.month);
+   };
+};
+uniqueMonths = uniqueMonths.sort(sorter);
+
+
 
 
 let title = "Brad's Blog";
