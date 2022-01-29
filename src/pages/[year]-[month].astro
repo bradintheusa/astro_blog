@@ -9,25 +9,23 @@ interface MarkdownFrontmatter {
 	publishDate: number;
 }
 
-let title = 'Timed Blog';
-let description = 'A test.';
-let permalink = 'https://example.com/';
 
-// Data Fetching: List all Markdown posts in the repo.
+
+// We need a page for every month year combination.
 export async function getStaticPaths() {
 
+	let allPosts = await Astro.fetchContent('./posts/*.md');
 
-let allPosts = await Astro.fetchContent('./posts/*.md');
+	let allYears = allPosts.map( (p) => {
+		const [date,month,year] = p.publishDate.split(" ")
+		return {'year' : year, 'month': month} } );
 
-let allYears = allPosts.map( (p) => {
-	const [date,month,year] = p.publishDate.split(" ")
-	return {'year' : year, 'month': month} } );
+	let uniqueYears = [...new Set(allYears)];	
 
-let uniqueYears = [...new Set(allYears)];	
-
-return 	uniqueYears.map( (p) => { return { params: { 'year': p.year, 'month': p.month }}} )
+	return 	uniqueYears.map( (p) => { return { params: { 'year': p.year, 'month': p.month }}} )
 
 }
+
 const {year,month} = Astro.request.params;
 
 
@@ -40,6 +38,10 @@ justyear = allPosts.filter( (p) => {
 
 justyear = justyear.sort((a, b) => new Date(b.publishDate).valueOf() - new Date(a.publishDate).valueOf());
 
+
+let title = "Brad's Blog";
+let description = month + " " + year;
+let permalink = 'https://example.com/';
 
 ---
 

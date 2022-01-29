@@ -8,48 +8,55 @@ interface MarkdownFrontmatter {
 	publishDate: number;
 }
 
-let title = 'Timed Blog';
-let description = 'A test.';
-let permalink = 'https://example.com/';
 
-// Data Fetching: List all Markdown posts in the repo.
+
+// This makes a list of all the years we need
 export async function getStaticPaths() {
 
+	// gab all the posts
+	let allPosts = await Astro.fetchContent('./posts/*.md');
 
-let allPosts = await Astro.fetchContent('./posts/*.md');
+	// get alll the years
+	let allYears = allPosts.map( (p) => {
+		const [date,month,year] = p.publishDate.split(" ")
+		return year } );
 
-let allYears = allPosts.map( (p) => {
-	const [date,month,year] = p.publishDate.split(" ")
-	return year } );
+	// unique ones
+	let uniqueYears = [...new Set(allYears)];	
 
-let uniqueYears = [...new Set(allYears)];	
-
-return 	uniqueYears.map( (y) => { return { params: { 'year': y }}} )
+	// make a list of them and return them.
+	return 	uniqueYears.map( (y) => { return { params: { 'year': y }}} )
 
 }
 
 
+// now get and show the selected year
 const {year} = Astro.request.params;
 
-
+// get all of the posts
 let allPosts = await Astro.fetchContent('./posts/*.md');
 
+// remove the ones not from this year
 justyear = allPosts.filter( (p) => {
 	const [_date,_month,_year] = p.publishDate.split(" ")
 	return (year == _year)} );
 
-
+// we will need all the months for making month page links.
 let allMonths = justyear.map( (p) => {
 	const [date,month,year] = p.publishDate.split(" ")
 	return  month  } );
 
 let uniqueMonths = [...new Set(allMonths)];	
 
+// we need the year in the url
 uniqueMonths = uniqueMonths.map( (m) => {
-	
-	return {'url':  year+"-"+m, 'desc' : m } } );
+	return {'url':  year+"-"+m, 'desc' : m } 
+} );
 
 
+let title = "Brad's Blog";
+let description =  year;
+let permalink = 'https://example.com/';
 ---
 
 <html lang="en">
@@ -103,9 +110,9 @@ uniqueMonths = uniqueMonths.map( (m) => {
 				</section>
 
 				<div>
-								
-				{uniqueMonths.map((m) => <div><a href={m.url}>{m.desc}</a></div>)}
-				
+				<div>Months 
+				{uniqueMonths.map((m) => <span>-<a href={m.url}>{m.desc}</a></span>)}
+				</div>								
 				
 				</div>
 				<section aria-label="Blog post list">

@@ -8,21 +8,22 @@ interface MarkdownFrontmatter {
 	publishDate: number;
 }
 
-let title = 'Asro Blog Sample';
+let title = 'Blog Sample';
 let description = 'A test.';
 let permalink = 'https://rightclick.com.au/';
 
 // Data Fetching: List all Markdown posts in the repo.
-
 let allPosts = await Astro.fetchContent('./posts/*.md');
 
+// See how many years we have.
 let allYears = allPosts.map( (p) => {
 	const [date,month,year] = p.publishDate.split(" ")
 	return year } );
 
+// just the unique ones
 uniqueYears = [...new Set(allYears)];	
 
-
+// sort the years
 uniqueYears = uniqueYears.sort((a, b) => 
 	{  if (a < b)  { return -1;  }
 	if (a > b)  { return 1;  }
@@ -31,13 +32,9 @@ uniqueYears = uniqueYears.sort((a, b) =>
 
 );
 
+// this page will just show the top ten posts
 filteredPosts = allPosts.sort((a, b) => new Date(b.publishDate).valueOf() - new Date(a.publishDate).valueOf());
 filteredPosts = filteredPosts.slice(0,10)
-
-// Full Astro Component Syntax:
-// https://docs.astro.build/core-concepts/astro-components/
-
-
 
 
 ---
@@ -91,9 +88,9 @@ filteredPosts = filteredPosts.slice(0,10)
 					<h1 class="latest">{title}</h1>
 					<p>{description}</p>
 				</section>
-				
-				{uniqueYears.map((y) => <div><a href={y}>{y}</a></div>)}
-				
+				<div>Years: 
+				{uniqueYears.map((y) => <span> -<a href={y}>{y}</a></span>)}
+				</div>
 				
 				<section aria-label="Blog post list">
 					{filteredPosts.map((p) => <BlogPostPreview post={p} />)}
