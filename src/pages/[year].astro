@@ -38,6 +38,11 @@ justyear = allPosts.filter( (p) => {
 	return (year == _year)} );
 
 
+let allMonths = justyear.map( (p) => {
+	const [date,month,year] = p.publishDate.split(" ")
+	return {'url':  year+"-"+month, 'desc' : month } } );
+
+let uniqueMonths = [...new Set(allMonths)];	
 
 
 
@@ -92,6 +97,13 @@ justyear = allPosts.filter( (p) => {
 					<h1 class="latest">{title}</h1>
 					<p>{description}</p>
 				</section>
+
+				<div>
+								
+				{uniqueMonths.map((m) => <div><a href={m.url}>{m.desc}</a></div>)}
+				
+				
+				</div>
 				<section aria-label="Blog post list">
 					{justyear.map((p) => <BlogPostPreview post={p} />)}
 				</section>
