@@ -93,7 +93,7 @@ justyear = justyear.sort((a, b) => new Date(b.publishDate).valueOf() - new Date(
 					<p>{description}</p>
 				</section>
 				<section aria-label="Blog post list">
-					{just2022.map((p) => <BlogPostPreview post={p} />)}
+					{justyear.map((p) => <BlogPostPreview post={p} />)}
 				</section>
 			</main>
 		</div>
