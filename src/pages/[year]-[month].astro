@@ -4,6 +4,7 @@ import BaseHead from '../components/BaseHead.astro';
 import BlogHeader from '../components/BlogHeader.astro';
 import BlogPostPreview from '../components/BlogPostPreview.astro';
 
+
 interface MarkdownFrontmatter {
 	publishDate: number;
 }
@@ -14,23 +15,30 @@ let permalink = 'https://example.com/';
 
 // Data Fetching: List all Markdown posts in the repo.
 export async function getStaticPaths() {
-  return [
-    { params: { year: '2021', month: "Dec"} },
-    { params: { year: '2022', month: "Jan"} }
-  ];
-}
-const {year} = Astro.request.params;
 
 
 let allPosts = await Astro.fetchContent('./posts/*.md');
-allPosts = allPosts.sort((a, b) => new Date(b.publishDate).valueOf() - new Date(a.publishDate).valueOf());
 
-just2022 = allPosts.filter( (p) => {
+let allYears = allPosts.map( (p) => {
+	const [date,month,year] = p.publishDate.split(" ")
+	return {'year' : year, 'month': month} } );
+
+let uniqueYears = [...new Set(allYears)];	
+
+return 	uniqueYears.map( (p) => { return { params: { 'year': p.year, 'month': p.month }}} )
+
+}
+const {year,month} = Astro.request.params;
+
+
+let allPosts = await Astro.fetchContent('./posts/*.md');
+
+justyear = allPosts.filter( (p) => {
 	const [_date,_month,_year] = p.publishDate.split(" ")
-	return (year == _year)} );
+	return (year == _year && month == _month)} );
 
 
-
+justyear = justyear.sort((a, b) => new Date(b.publishDate).valueOf() - new Date(a.publishDate).valueOf());
 
 
 ---

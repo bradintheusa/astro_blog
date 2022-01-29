@@ -24,7 +24,7 @@ let allYears = allPosts.map( (p) => {
 
 let uniqueYears = [...new Set(allYears)];	
 
-return 	uniqueYears.map( (y) => { return { params: { year: y }}} )
+return 	uniqueYears.map( (y) => { return { params: { 'year': y }}} )
 
 }
 const {year} = Astro.request.params;
