@@ -27,6 +27,8 @@ let uniqueYears = [...new Set(allYears)];
 return 	uniqueYears.map( (y) => { return { params: { 'year': y }}} )
 
 }
+
+
 const {year} = Astro.request.params;
 
 
@@ -39,10 +41,13 @@ justyear = allPosts.filter( (p) => {
 
 let allMonths = justyear.map( (p) => {
 	const [date,month,year] = p.publishDate.split(" ")
-	return {'url':  year+"-"+month, 'desc' : month } } );
+	return  month  } );
 
 let uniqueMonths = [...new Set(allMonths)];	
 
+uniqueMonths = uniqueMonths.map( (m) => {
+	
+	return {'url':  year+"-"+m, 'desc' : m } } );
 
 
 ---
