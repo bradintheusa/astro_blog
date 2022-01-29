@@ -18,20 +18,20 @@ export async function getStaticPaths() {
 
 
 
-let allPosts = await Astro.fetchContent('./posts/*.md');
+// let allPosts = await Astro.fetchContent('./posts/*.md');
 
-let allYears = allPosts.map( (p) => {
-	const [date,month,year] = p.publishDate.split(" ")
-	return year } );
+// let allYears = allPosts.map( (p) => {
+// 	const [date,month,year] = p.publishDate.split(" ")
+// 	return year } );
 
-uniqueYears = [...new Set(allYears)];	
+// uniqueYears = [...new Set(allYears)];	
 
-return 	uniqueYears.map( (y) => { params: { year: y }} )
-
+// return 	uniqueYears.map( (y) => { params: { year: y } )
+  return [
+    { params: { year: '2021' } },
+    { params: { year: '2022' } }
+  ];
 }
-
-
-
 const {year} = Astro.request.params;
 
 
