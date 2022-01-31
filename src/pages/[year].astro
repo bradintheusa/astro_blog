@@ -13,7 +13,7 @@ interface MarkdownFrontmatter {
 // This makes a list of all the years we need
 export async function getStaticPaths() {
 
-	// gab all the posts
+	// grab all the posts
 	let allPosts = await Astro.fetchContent('./posts/*.md');
 
 	// get alll the years
