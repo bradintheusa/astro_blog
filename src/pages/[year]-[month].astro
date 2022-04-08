@@ -10,14 +10,14 @@ interface MarkdownFrontmatter {
 }
 
 
-
 // We need a page for every month year combination.
 export async function getStaticPaths() {
 
-	let allPosts = await Astro.fetchContent('./posts/*.md');
+	let allPosts = await Astro.glob('./posts/*.md');
 
 	let allYears = allPosts.map( (p) => {
-		const [date,month,year] = p.publishDate.split(" ")
+		
+		const [year,month] = p.frontmatter.date.split("-")
 		return {'year' : year, 'month': month} } );
 
 	let uniqueYears = [...new Set(allYears)];	
@@ -26,17 +26,20 @@ export async function getStaticPaths() {
 
 }
 
-const {year,month} = Astro.request.params;
+const {year,month} = Astro.params;
 
+function formatDate(date) {
+	return new Date(date).toUTCString().replace(/(\d\d\d\d) .*/, '$1'); // remove everything after YYYY
+}
 
-let allPosts = await Astro.fetchContent('./posts/*.md');
+let allPosts = await Astro.glob('./posts/*.md');
 
-justyear = allPosts.filter( (p) => {
-	const [_date,_month,_year] = p.publishDate.split(" ")
+let justyear = allPosts.filter( (p) => {
+	const [_year,_month] = p.frontmatter.date.split("-")
 	return (year == _year && month == _month)} );
 
 
-justyear = justyear.sort((a, b) => new Date(b.publishDate).valueOf() - new Date(a.publishDate).valueOf());
+justyear = justyear.sort((a, b) => new Date(b.frontmatter.date).valueOf() - new Date(a.frontmatter.date).valueOf());
 
 
 let title = "Brad's Blog";
@@ -47,8 +50,8 @@ let permalink = 'https://example.com/';
 
 <html lang="en">
 	<head>
-		<BaseHead {title} {description} {permalink} />
-		<link rel="stylesheet" href={Astro.resolve('../styles/blog.css')} />
+		<BaseHead title={title} description={description} permalink={permalink} />
+		<link rel="stylesheet" href='../styles/blog.css' />
 
 		<style>
 			header {

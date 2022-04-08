@@ -3,7 +3,7 @@ setup: |
   import Layout from '../../layouts/BlogPost.astro'
   import Cool from '../../components/Author.astro'
 title: Birthday post
-publishDate: 12 Feb 2022
+date: 2022-02-01
 name: Brad
 value: 128
 description: Birthday post

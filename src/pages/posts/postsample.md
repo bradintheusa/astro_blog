@@ -3,7 +3,7 @@ setup: |
   import Layout from '../../layouts/BlogPost.astro'
   import Cool from '../../components/Author.astro'
 title: 2022 Hello World Post!
-publishDate: 1 Jan 2022
+date: 2022-01-01
 name: Nate Moore
 value: 128
 description: 2022 Hello World Post!

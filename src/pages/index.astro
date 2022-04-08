@@ -8,23 +8,27 @@ interface MarkdownFrontmatter {
 	publishDate: number;
 }
 
+function formatDate(date) {
+	return new Date(date).toUTCString().replace(/(\d\d\d\d) .*/, '$1'); // remove everything after YYYY
+}
+
 let title = 'Blog Sample';
 let description = 'A test.';
 let permalink = 'https://rightclick.com.au/';
 
 // Data Fetching: List all Markdown posts in the repo.
-let allPosts = await Astro.fetchContent('./posts/*.md');
+let allPosts = await Astro.glob('./posts/*.md');
 
 // See how many years we have.
 let allYears = allPosts.map( (p) => {
-	const [date,month,year] = p.publishDate.split(" ")
+	const [year,month] = p.frontmatter.date.split("-")
 	return year } );
 
 // just the unique ones
-uniqueYears = [...new Set(allYears)];	
+let uy = [...new Set(allYears)];	
 
 // sort the years
-uniqueYears = uniqueYears.sort((a, b) => 
+let uniqueYears = uy.sort((a, b) => 
 	{  if (a < b)  { return -1;  }
 	if (a > b)  { return 1;  }
 	return 0;
@@ -32,7 +36,7 @@ uniqueYears = uniqueYears.sort((a, b) =>
 );
 
 // this page will just show the top ten posts
-filteredPosts = allPosts.sort((a, b) => new Date(b.publishDate).valueOf() - new Date(a.publishDate).valueOf());
+let filteredPosts = allPosts.sort((a, b) => new Date(b.frontmatter.date).valueOf() - new Date(a.frontmatter.date).valueOf());
 filteredPosts = filteredPosts.slice(0,10)
 
 
@@ -40,8 +44,8 @@ filteredPosts = filteredPosts.slice(0,10)
 
 <html lang="en">
 	<head>
-		<BaseHead {title} {description} {permalink} />
-		<link rel="stylesheet" href={Astro.resolve('../styles/blog.css')} />
+		<BaseHead title={title} description={description} permalink={permalink} />
+		<link rel="stylesheet" href='../../styles/blog.css' />
 
 		<style>
 			header {
@@ -87,9 +91,9 @@ filteredPosts = filteredPosts.slice(0,10)
 					<h1 class="latest">{title}</h1>
 					<p>{description}</p>
 				</section>
-				<div>Years: 
+				<h5>Years: 
 				{uniqueYears.map((y) => <span> -<a href={y}>{y}</a></span>)}
-				</div>
+				</h5>
 				
 				<section aria-label="Blog post list">
 					{filteredPosts.map((p) => <BlogPostPreview post={p} />)}

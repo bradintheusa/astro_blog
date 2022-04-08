@@ -14,11 +14,11 @@ interface MarkdownFrontmatter {
 export async function getStaticPaths() {
 
 	// grab all the posts
-	let allPosts = await Astro.fetchContent('./posts/*.md');
+	let allPosts = await Astro.glob('./posts/*.md');
 
 	// get alll the years
 	let allYears = allPosts.map( (p) => {
-		const [date,month,year] = p.publishDate.split(" ")
+		const [year] = p.frontmatter.date.split("-")
 		return year } );
 
 	// unique ones
@@ -30,36 +30,37 @@ export async function getStaticPaths() {
 }
 
 
+const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
 // now get and show the selected year
-const {year} = Astro.request.params;
+const {year} = Astro.params;
 
 // get all of the posts
-let allPosts = await Astro.fetchContent('./posts/*.md');
+let allPosts = await Astro.glob('./posts/*.md');
 
 // remove the ones not from this year
-justyear = allPosts.filter( (p) => {
-	const [_date,_month,_year] = p.publishDate.split(" ")
+let justyear = allPosts.filter( (p) => {
+	const [_year,_month] = p.frontmatter.date.split("-")
 	return (year == _year)} );
 
 // we will need all the months for making month page links.
 let allMonths = justyear.map( (p) => {
-	const [date,month,year] = p.publishDate.split(" ")
+	const [year,month] = p.frontmatter.date.split("-")
 	return  month  } );
 
-let uniqueMonths = [...new Set(allMonths)];	
+let um = [...new Set(allMonths)];	
 
 // we need the year in the url
-uniqueMonths = uniqueMonths.map( (m) => {
-	return {'url':  year+"-"+m,year: year, month: m, 'desc' : m } 
+let uniqueMonths = um.map( (m) => {
+	return {'url':  year+"-"+m,year: year, month: m, 'desc' : months[m-1] } 
 } );
 
-const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 const sorter = (a, b) => {
    if(a.year !== b.year){
       return a.year - b.year;
    }else{
-      return months.indexOf(a.month) - months.indexOf(b.month);
+      return a.month - (b.month);
    };
 };
 uniqueMonths = uniqueMonths.sort(sorter);
@@ -74,8 +75,8 @@ let permalink = 'https://example.com/';
 
 <html lang="en">
 	<head>
-		<BaseHead {title} {description} {permalink} />
-		<link rel="stylesheet" href={Astro.resolve('../styles/blog.css')} />
+		<BaseHead title={title} description={description} permalink={permalink} />
+		<link rel="stylesheet" href='../styles/blog.css' />
 
 		<style>
 			header {
