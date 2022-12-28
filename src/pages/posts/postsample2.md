@@ -7,6 +7,7 @@ date: 2022-01-3.
 name: Nate Moore
 value: 128
 description: 2022 Hello World Post!
+category: ['one','three']
 ---
 
 <Cool name={frontmatter.name} href="https://twitter.com/n_moore" client:load />

@@ -6,6 +6,8 @@ title: 2022 Hello World Post!
 date: 2022-01-01
 name: Nate Moore
 value: 128
+isTech: true
+category: ['one','two','three']
 description: 2022 Hello World Post!
 ---
 
